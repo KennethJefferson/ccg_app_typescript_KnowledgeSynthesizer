@@ -1,0 +1,75 @@
+# Dependencies
+node_modules/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+.pnp
+.pnp.js
+
+# Build outputs
+dist/
+build/
+*.tsbuildinfo
+
+# Bun
+bun.lockb
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Test coverage
+coverage/
+.nyc_output/
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+tmp/
+
+# Test course data (large files, not needed in repo)
+__test-courses/
+
+# Development docs (internal notes)
+__docs/
+
+# Large merged file assets (generated externally)
+fileassets.txt
+
+# Generated/processed content
+**/CODE/__cc_validated_files/
+**/CODE/__ccg_*/
+**/CODE/__cc_processing_log/
+**/CODE/__CC_Projects/
+
+# Temp prompt files
+_temp_prompt.txt
+_generation_log.txt
+
+# Credentials (never commit)
+.credentials.json
+*.pem
+*.key
