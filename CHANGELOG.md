@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.2.0] - 2026-01-15
+
+### Changed
+
+- **Simplified Pipeline**: Removed extraction phase - content now passes directly from fileassets.txt to generator
+- **Removed processor.ts**: File extraction/routing no longer needed since fileassets.txt contains all content
+- **Removed -o flag**: Output directory option removed as __cc_validated_files/ no longer created
+- **Updated generator.ts**: Now accepts ParsedAssets directly instead of reading from validated files directory
+- **Updated worker.ts**: Simplified to parse assets and run generator in one step
+
+### Removed
+
+- `src/processor.ts` - No longer needed
+- `__cc_validated_files/` output directory - Content passed directly to generator
+- `-o, --output` CLI flag - No intermediate output directory needed
+
+---
+
 ## [3.1.0] - 2026-01-15
 
 ### Added
@@ -68,5 +86,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 | Version | Date | Summary |
 |---------|------|---------|
+| 3.2.0 | 2026-01-15 | Simplified pipeline - removed extraction phase |
 | 3.1.0 | 2026-01-15 | Content generation via Claude Agent SDK |
 | 3.0.0 | 2026-01-15 | Initial v3 release with extraction pipeline |

@@ -1,12 +1,12 @@
 import { $ } from "bun";
-import type { SkillInfo } from "./types";
+import type { SkillInfo, ParsedAssets } from "./types";
 import path from "path";
 
 const MAX_CONTENT_SIZE = 150_000; // ~37K tokens, leave room for response
 
 export interface GeneratorConfig {
   skill: SkillInfo;
-  validatedFilesDir: string;
+  assets: ParsedAssets;
   outputDir: string;
   courseName: string;
 }
@@ -17,36 +17,28 @@ export interface GeneratorResult {
   error?: string;
 }
 
-interface GeneratedFile {
-  path: string;
-  content: string;
-}
-
 /**
- * Read all validated files from the directory
+ * Build the prompt content from parsed file assets
  */
-async function readValidatedFiles(dir: string): Promise<Map<string, string>> {
-  const files = new Map<string, string>();
-  const glob = new Bun.Glob("**/*");
+function buildContentPrompt(assets: ParsedAssets): string {
+  let content = "# Course Content\n\nThe following files have been extracted from the course:\n\n";
 
-  for await (const file of glob.scan({ cwd: dir, onlyFiles: true })) {
-    if (file === ".gitkeep") continue;
-    const content = await Bun.file(path.join(dir, file)).text();
-    files.set(file, content);
+  // Add directory listing for context
+  if (assets.directoryListing) {
+    content += "## Directory Structure\n\n```\n" + assets.directoryListing + "\n```\n\n";
   }
 
-  return files;
-}
-
-/**
- * Build the prompt content from validated files
- */
-function buildContentPrompt(files: Map<string, string>): string {
-  let content = "# Course Content\n\nThe following files have been extracted from the course:\n\n";
+  content += "## Files\n\n";
   let totalSize = content.length;
 
-  for (const [filename, fileContent] of files) {
-    const fileSection = `## File: ${filename}\n\n\`\`\`\n${fileContent}\n\`\`\`\n\n`;
+  for (const file of assets.files) {
+    // Skip binary files that aren't useful as text
+    const skipExtensions = ['.mp4', '.mkv', '.avi', '.mov', '.mp3', '.wav', '.exe', '.dll', '.so', '.bin', '.zip', '.rar', '.7z'];
+    if (skipExtensions.includes(file.extension.toLowerCase())) {
+      continue;
+    }
+
+    const fileSection = `### File: ${file.filename}\n\n\`\`\`\n${file.content}\n\`\`\`\n\n`;
 
     if (totalSize + fileSection.length > MAX_CONTENT_SIZE) {
       content += `\n[Note: Additional files truncated due to size limits]\n`;
@@ -61,66 +53,27 @@ function buildContentPrompt(files: Map<string, string>): string {
 }
 
 /**
- * Parse the generated output to extract files
- */
-function parseGeneratedFiles(response: string): GeneratedFile[] {
-  const files: GeneratedFile[] = [];
-
-  // Pattern to match file blocks: === FILE: path/to/file.md ===
-  const filePattern = /===\s*FILE:\s*([^\s=]+)\s*===\n([\s\S]*?)(?=\n===\s*FILE:|$)/g;
-
-  let match;
-  while ((match = filePattern.exec(response)) !== null) {
-    const [, filePath, content] = match;
-    files.push({
-      path: filePath.trim(),
-      content: content.trim(),
-    });
-  }
-
-  // Fallback: if no file markers found, try to extract from code blocks with file paths
-  if (files.length === 0) {
-    const codeBlockPattern = /```(?:markdown|md)?\s*\n?(?:#\s*)?(?:File:\s*)?([^\n]+\.md)\n([\s\S]*?)```/g;
-    while ((match = codeBlockPattern.exec(response)) !== null) {
-      const [, filePath, content] = match;
-      if (filePath && content) {
-        files.push({
-          path: filePath.trim(),
-          content: content.trim(),
-        });
-      }
-    }
-  }
-
-  return files;
-}
-
-/**
  * Generate content using Claude CLI (Claude Agent SDK)
  */
 export async function runGenerator(config: GeneratorConfig): Promise<GeneratorResult> {
-  const { skill, validatedFilesDir, outputDir, courseName } = config;
+  const { skill, assets, outputDir, courseName } = config;
 
   try {
     // Read skill instructions
     const skillContent = await Bun.file(skill.path).text();
 
-    // Read validated files
-    const files = await readValidatedFiles(validatedFilesDir);
-
-    if (files.size === 0) {
+    if (assets.files.length === 0) {
       return {
         success: false,
         filesGenerated: [],
-        error: "No validated files found to process",
+        error: "No files found in fileassets.txt to process",
       };
     }
 
-    // Build content prompt
-    const contentPrompt = buildContentPrompt(files);
+    // Build content prompt directly from parsed assets
+    const contentPrompt = buildContentPrompt(assets);
 
     // Build the full prompt for Claude CLI
-    // Claude will write files directly to the output directory
     const fullPrompt = `You are a content generator. Your task is to create documentation files based on skill instructions.
 
 ## Skill Instructions
@@ -160,8 +113,6 @@ Start by creating README.md, then the procedure files, then quick_reference.md a
     await Bun.write(path.join(outputDir, ".gitkeep"), "");
 
     // Run Claude CLI with Write tool allowed
-    // --allowedTools Write,Glob allows file operations
-    // --max-turns limits iterations
     const result = await $`claude --dangerously-skip-permissions --allowedTools "Write,Glob,Read" --max-turns 50 < ${tempPromptFile}`
       .quiet()
       .nothrow();

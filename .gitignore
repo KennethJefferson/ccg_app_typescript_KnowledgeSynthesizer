@@ -59,8 +59,7 @@ __docs/
 # Large merged file assets (generated externally)
 fileassets.txt
 
-# Generated/processed content
-**/CODE/__cc_validated_files/
+# Generated content
 **/CODE/__ccg_*/
 **/CODE/__cc_processing_log/
 **/CODE/__CC_Projects/

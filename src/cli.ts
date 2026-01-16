@@ -5,8 +5,8 @@
  * Synthesize AI-generated content from course materials.
  *
  * Usage:
- *   bun run src/cli.ts -i ./course -ccg "SOP walkthrough"
- *   bun run src/cli.ts -i ./course1 ./course2 -w 5 -ccg "Podcast"
+ *   bun run src/cli.ts -i ./course -ccg "SOP"
+ *   bun run src/cli.ts -i ./course1 ./course2 -w 5 -ccg "Summary"
  */
 
 import { parseArgs } from "util";
@@ -29,19 +29,15 @@ Arguments:
 
 Options:
   -w, --workers <count>    Number of parallel workers (default: 3)
-  -o, --output <path>      Output directory. Default: <course>/CODE/__cc_validated_files/
   -l, --list               List available ccg-* skills
   -h, --help               Show this help message
 
 Examples:
   # Single course
-  bun run src/cli.ts -i "./C++ for Beginners" --ccg "SOP walkthrough"
+  bun run src/cli.ts -i "./C++ for Beginners" --ccg "SOP"
 
   # Multiple courses with custom workers
-  bun run src/cli.ts -i ./course1 ./course2 ./course3 -w 5 --ccg "Podcast"
-
-  # Custom output location
-  bun run src/cli.ts -i ./course -o ./generated --ccg "Project"
+  bun run src/cli.ts -i ./course1 ./course2 ./course3 -w 5 --ccg "Summary"
 
   # List available skills
   bun run src/cli.ts --list
@@ -54,7 +50,6 @@ async function main(): Promise<void> {
     options: {
       input: { type: "string", short: "i", multiple: true },
       workers: { type: "string", short: "w" },
-      output: { type: "string", short: "o" },
       ccg: { type: "string", short: "c" },
       list: { type: "boolean", short: "l" },
       help: { type: "boolean", short: "h" },
@@ -96,16 +91,14 @@ async function main(): Promise<void> {
   }
 
   if (!values.ccg) {
-    console.error("Error: No content type specified. Use -ccg <type>.");
+    console.error("Error: No content type specified. Use --ccg <type>.");
     printHelp();
     process.exit(1);
   }
 
-  // Validate inputs exist
+  // Validate inputs exist (check for fileassets.txt)
   for (const inputPath of inputPaths) {
     const resolved = path.resolve(inputPath);
-    const dir = Bun.file(resolved);
-    // Check if directory exists by trying to read fileassets.txt
     const assetsFile = Bun.file(path.join(resolved, "fileassets.txt"));
     if (!(await assetsFile.exists())) {
       console.error(`Error: fileassets.txt not found in: ${inputPath}`);
@@ -126,10 +119,9 @@ async function main(): Promise<void> {
 
   // Resolve paths
   const resolvedInputs = inputPaths.map((p) => path.resolve(p));
-  const resolvedOutput = values.output ? path.resolve(values.output) : undefined;
 
   // Run worker pool with skill info
-  await runWorkerPool(resolvedInputs, workers, resolvedOutput, SKILLS_DIR, values.ccg, skill);
+  await runWorkerPool(resolvedInputs, workers, undefined, SKILLS_DIR, values.ccg, skill);
 }
 
 main().catch((error) => {
