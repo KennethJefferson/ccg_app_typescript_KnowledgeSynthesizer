@@ -63,8 +63,8 @@ export class Logger {
     };
   }
 
-  async saveLog(outputDir: string): Promise<void> {
-    const logDir = `${outputDir}/__cc_processing_log`;
+  async saveLog(coursePath: string): Promise<void> {
+    const logDir = `${coursePath}/CODE/__cc_processing_log`;
     await Bun.write(`${logDir}/run_${this.runId}.json`, JSON.stringify(this.getRunLog(), null, 2));
   }
 }
