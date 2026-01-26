@@ -96,12 +96,12 @@ async function main(): Promise<void> {
     process.exit(1);
   }
 
-  // Validate inputs exist (check for fileassets.txt)
+  // Validate inputs exist (check for fileassets_optimized.txt)
   for (const inputPath of inputPaths) {
     const resolved = path.resolve(inputPath);
-    const assetsFile = Bun.file(path.join(resolved, "fileassets.txt"));
+    const assetsFile = Bun.file(path.join(resolved, "fileassets_optimized.txt"));
     if (!(await assetsFile.exists())) {
-      console.error(`Error: fileassets.txt not found in: ${inputPath}`);
+      console.error(`Error: fileassets_optimized.txt not found in: ${inputPath}`);
       process.exit(1);
     }
   }

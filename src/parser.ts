@@ -4,7 +4,7 @@ const SECTION_DELIMITER = "=====================================================
 const FILE_DELIMITER = "================";
 
 /**
- * Parse fileassets.txt and extract directory listing + file entries
+ * Parse fileassets_optimized.txt and extract directory listing + file entries
  */
 export function parseFileAssets(content: string): ParsedAssets {
   // Normalize line endings to \n
@@ -56,14 +56,14 @@ export function parseFileAssets(content: string): ParsedAssets {
 }
 
 /**
- * Read and parse fileassets.txt from a course directory
+ * Read and parse fileassets_optimized.txt from a course directory
  */
 export async function loadFileAssets(coursePath: string): Promise<ParsedAssets> {
-  const filePath = `${coursePath}/fileassets.txt`;
+  const filePath = `${coursePath}/fileassets_optimized.txt`;
   const file = Bun.file(filePath);
 
   if (!(await file.exists())) {
-    throw new Error(`fileassets.txt not found in ${coursePath}`);
+    throw new Error(`fileassets_optimized.txt not found in ${coursePath}`);
   }
 
   const content = await file.text();

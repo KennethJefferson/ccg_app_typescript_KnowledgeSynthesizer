@@ -27,17 +27,17 @@ export async function runWorker(config: WorkerConfig): Promise<{
   const logger = new Logger();
 
   try {
-    // Load and parse fileassets.txt
+    // Load and parse fileassets_optimized.txt
     const assets = await loadFileAssets(coursePath);
 
     // Register worker with TUI
     tui.addWorker(workerId, coursePath, assets.files.length);
-    tui.updateWorker(workerId, 0, "Parsing fileassets.txt");
+    tui.updateWorker(workerId, 0, "Parsing fileassets_optimized.txt");
 
     // Log file count
     const filesCount = assets.files.length;
     if (filesCount === 0) {
-      tui.completeWorker(workerId, false, "No files found in fileassets.txt");
+      tui.completeWorker(workerId, false, "No files found in fileassets_optimized.txt");
       return { coursePath, filesCount: 0, log: logger.getRunLog() };
     }
 

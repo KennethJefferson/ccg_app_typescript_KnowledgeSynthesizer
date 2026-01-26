@@ -66,7 +66,7 @@ export async function runGenerator(config: GeneratorConfig): Promise<GeneratorRe
       return {
         success: false,
         filesGenerated: [],
-        error: "No files found in fileassets.txt to process",
+        error: "No files found in fileassets_optimized.txt to process",
       };
     }
 
