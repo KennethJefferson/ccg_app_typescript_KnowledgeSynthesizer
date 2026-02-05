@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.3.0] - 2026-02-05
+
+### Added
+
+- **ccg-pimpdaddyexplainer skill**: New content generator that produces satirical educational summaries in the voice of a veteran pimp. Explains technical concepts using pimp culture analogies, street hustle metaphors, and game wisdom. Same output structure as summary-generator (topics/, glossary, quick_reference, study_guide). Activated with `--ccg PimpDaddyExplainer`.
+
+---
+
 ## [3.2.1] - 2026-01-16
 
 ### Fixed
@@ -101,6 +109,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 | Version | Date | Summary |
 |---------|------|---------|
+| 3.3.0 | 2026-02-05 | Added ccg-pimpdaddyexplainer skill |
 | 3.2.1 | 2026-01-16 | Fixed SKILL.md-driven generation - skills control output format |
 | 3.2.0 | 2026-01-15 | Simplified pipeline - removed extraction phase |
 | 3.1.0 | 2026-01-15 | Content generation via Claude Agent SDK |

@@ -30,6 +30,7 @@ Single-phase generation pipeline:
 skills/
 ├── ccg-sop-generator/       # Content synthesis (active)
 ├── ccg-summary-generator/
+├── ccg-pimpdaddyexplainer/  # Satirical pimp-persona summaries
 ├── ccg-project-*/
 ├── ccg-github-sync/
 ├── extractor-*/             # Reserved for future use

@@ -61,6 +61,7 @@ bun run src/cli.ts --list
 |-------|-------------|
 | `ccg-sop-generator` | Generate Standard Operating Procedures |
 | `ccg-summary-generator` | Generate course summaries and study guides |
+| `ccg-pimpdaddyexplainer` | Generate satirical pimp-persona educational summaries |
 | `ccg-project-maker` | Generate project scaffolding |
 
 ### Extractors
@@ -110,6 +111,14 @@ My Course/
     │   ├── README.md
     │   ├── topics/
     │   │   ├── topic_01_*.md
+    │   │   └── ...
+    │   ├── glossary.md
+    │   ├── quick_reference.md
+    │   └── study_guide.md
+    ├── __ccg_PimpDaddyExplainer/  # PimpDaddyExplainer skill output
+    │   ├── README.md
+    │   ├── topics/
+    │   │   ├── topic_01.md
     │   │   └── ...
     │   ├── glossary.md
     │   ├── quick_reference.md

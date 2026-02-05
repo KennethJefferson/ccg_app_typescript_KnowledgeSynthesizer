@@ -32,6 +32,9 @@ bun run src/cli.ts -i "./OpenAPI Course" --ccg SOP
 
 # Generate summaries
 bun run src/cli.ts -i "./Python Basics" --ccg Summary
+
+# Generate pimp-persona educational summaries
+bun run src/cli.ts -i "./Python Basics" --ccg PimpDaddyExplainer
 ```
 
 ### Multiple Course Processing
@@ -66,6 +69,9 @@ Available ccg-* skills:
 
   ccg-summary-generator
     Generate course summaries and study guides
+
+  ccg-pimpdaddyexplainer
+    Generate satirical pimp-persona educational summaries
 ```
 
 ## Input Requirements
@@ -159,6 +165,18 @@ __ccg_Summary/
 ├── glossary.md         # Key terms and definitions
 ├── quick_reference.md  # Condensed reference guide
 └── study_guide.md      # Combined study material
+```
+
+**PimpDaddyExplainer Skill (`--ccg PimpDaddyExplainer`):**
+```
+__ccg_PimpDaddyExplainer/
+├── README.md           # "The Game Plan" - course overview
+├── topics/             # Individual topic breakdowns in pimp voice
+│   ├── topic_01.md
+│   └── ...
+├── glossary.md         # Square-to-pimp term translations
+├── quick_reference.md  # "Pimp Commandments" cheat sheet
+└── study_guide.md      # Continuous mentoring narrative
 ```
 
 Each skill's SKILL.md defines its output structure.
